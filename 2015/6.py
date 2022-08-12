@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# TODO: rewrite this one! This implementation is too slow, and too complicated. The problem can be solved much more simply and effeciently.
+
 from abc import ABC, abstractmethod
 from itertools import product
 from numpy import prod
@@ -28,7 +30,7 @@ def consume_lights_range(string):
     a, string = consume_coordinates(string)
     _, string = consume(string, ["through"])
     b, string = consume_coordinates(string)
-    return product(*[list(range(ax, bx + 1)) for ax, bx in zip(a, b)]), string
+    return [range(ax, bx + 1) for ax, bx in zip(a, b)], string
 
 class Grid:
     """An n-dimensional array."""
@@ -49,6 +51,20 @@ class Grid:
 
     def __setitem__(self, coordinates, value):
         self.values[self.get_index(coordinates)] = value
+
+    def apply_to_range(self, function, lights_range):
+        bases = [prod(self.dimensions[:i]) for i in range(len(self.dimensions))]
+        for coordinates in product(*lights_range):
+            index = int(sum(coordinate * base for coordinate, base in zip(coordinates, bases)))
+            self.values[index] = function(self.values[index])
+
+    def __str__(self):
+        # TODO do this nicely! (I just did it as an ad hoc debugging tool
+        output = ""
+        for y in range(self.dimensions[1]):
+            i = y * self.dimensions[0]
+            output += str(self.values[i:i + self.dimensions[0]]) + "\n"
+        return output
 
 class Instruction(ABC):
     """A light state manipulation program instruction."""
@@ -75,27 +91,55 @@ class Instruction(ABC):
         """Given the state of a light, return the new state."""
         ...
 
+    @property
+    @abstractmethod
+    def opcode(self) -> str:
+        ...
+
     def execute(self, lights):
-        for index in self.lights_range:
-            lights[index] = self.function(lights[index])
+        lights.apply_to_range(self.function, self.lights_range)
+
+    def __str__(self):
+        a_string = ",".join(str(dimension_range.start) for dimension_range in self.lights_range)
+        b_string = ",".join(str(dimension_range.stop) for dimension_range in self.lights_range)
+        range_string = f"{a_string} through {b_string}"
+        return f"{self.opcode} {range_string}"
 
 class InstructionToggle(Instruction):
-    """Instruction which toggles the state of the lights."""
+    """Instruction which toggles the state of the lights. (Actually it increases the brightness by 2.)"""
 
     def function(self, state):
-        return not state
+        if type(state) == bool:
+            return not state
+        else: return state + 2
+
+    @property
+    def opcode(self):
+        return "toggle"
 
 class InstructionEnable(Instruction):
-    """Instruction which turns on the lights."""
+    """Instruction which turns on the lights. (Actually it increases brightness by 1.)"""
 
     def function(self, state):
-        return True
+        if type(state) == bool:
+            return True
+        else: return state + 1
+
+    @property
+    def opcode(self):
+        return "turn on"
 
 class InstructionDisable(Instruction):
-    """Instruction which turns off the lights."""
+    """Instruction which turns off the lights. (Actually it decreases brightness by 1.)"""
 
     def function(self, state):
-        return False
+        if type(state) == bool:
+            return False
+        else: return max(0, state - 1)
+
+    @property
+    def opcode(self):
+        return "turn off"
 
 class Program:
     """A program that instructs how to manipulate the state of the lights."""
@@ -113,12 +157,20 @@ class Program:
         """Run the program given the lights to manipulate."""
 
         for i, instruction in enumerate(self.instructions):
-            print(f"Executing instruction {i + 1}/{len(self.instructions)} ({i / len(self.instructions)}%)")
+            print(f"Executing instruction {i + 1}/{len(self.instructions)} ({i / len(self.instructions):.2}%)")
+            #print(instruction)
             instruction.execute(lights)
+            #print(lights)
 
 @solution("6.txt", "Part 1")
 def solve(string):
     lights = Grid.with_dimensions(False, 1000, 1000)
     Program.from_string(string).execute(lights)
-    return lights.values.count(False)
+    return lights.values.count(True)
+
+@solution("6.txt", "Part 2")
+def solve(string):
+    lights = Grid.with_dimensions(0, 1000, 1000)
+    Program.from_string(string).execute(lights)
+    return sum(lights.values)
 
