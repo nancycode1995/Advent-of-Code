@@ -11,11 +11,11 @@ def translate(string):
     return map(mapping.__getitem__, string)
 
 @solution("1.txt", "Part 1")
-def part_1(string):
+def solve(string):
     return sum(translate(string))
 
 @solution("1.txt", "Part 2")
-def part_1(string):
+def solve(string):
     for i, n in enumerate(cumsum(list(translate(string)))):
         if n < 0:
             return i + 1
