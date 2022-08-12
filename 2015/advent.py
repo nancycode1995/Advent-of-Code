@@ -8,7 +8,7 @@ def solution(path_input, prompt="Solution"):
 
         try:
             with open(path_input) as stream:
-                contents = stream.read()
+                contents = stream.read().strip()
                 solution = function_solve(contents)
                 print(f"{prompt}: {solution}")
         except FileNotFoundError:
