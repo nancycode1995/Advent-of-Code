@@ -15,20 +15,6 @@ class Place:
         """The set of places that can be traveled to from this place."""
         return self.distances.keys()
 
-    @staticmethod
-    def nearest_distance(distances) -> (str, int):
-        return sorted(distances.items(), key=lambda x: x[1])[0]
-
-    @property
-    def nearest(self) -> str:
-        """The nearest place to here."""
-        return self.nearest_distance(self.distances)[0]
-
-    def nearest_of(self, places: set):
-        """Return the nearest place to here of the provided places."""
-        distances = {place:self.distance(place) for place in places}
-        return self.nearest_distance(distances)[0]
-
     def distance(self, place) -> int:
         """The distance from here to the given place."""
         return self.distances[place]
