@@ -28,27 +28,25 @@ def solve(string):
 
 @solution("19.txt", "Part 2")
 def solve(string):
-    replacements_string, molecule = string.split("\n\n")
+    replacements_string, target = string.split("\n\n")
     replacements = [tuple(s.strip() for s in string.split("=>")) for string in replacements_string.split("\n")]
 
-    def try_random_search(molecule, target="e"):
-        """Attempt a random path."""
-        steps = 0
-        while molecule != "e":
-            old = molecule
-            shuffle(replacements)
-            for left, right in replacements:
-                if right in molecule:
-                    molecule = molecule.replace(right, left)
-                    steps += 1
-            if old == molecule:
-                # Dead end
-                return -1
-        # Success in this number of steps
-        return steps
+    replacements.sort(key=lambda x: len(x[1]), reverse=True)
 
-    # Try several random paths and pick the lowest
-    # (Relying on probability that the answer will be correct)
-    paths = [try_random_search(molecule) for i in range(1000000)]
-    filtered = list(filter(lambda x: x != -1, paths))
-    return min(*filtered)
+    steps = 0
+    molecule = target
+    while molecule != "e":
+        old = molecule
+        print(molecule)
+        for left, right in replacements:
+            if right in molecule:
+                molecule = molecule.replace(right, left)
+                steps += 1
+                break
+        if old == molecule:
+            # Dead end
+            print("dead")
+            shuffle(replacements)
+            molecule = target
+    # Success in this number of steps
+    return steps
