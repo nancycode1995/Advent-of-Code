@@ -132,29 +132,43 @@ class Game:
 # Store singleton
 store = Store()
 
+def games(properties):
+    """Yield all possible games within buying constraints."""
+
+    # Constraints:
+    # Must purchase 1 weapon
+    # Must purchase either 0 or 1 armor
+    # Must purchase 0, 1, or 2 rings
+    n_items_per_category_range = range(1, 2), range(0, 2), range(0, 3)
+    categories = store.weapons, store.armor, store.rings
+    for n_items_per_category in product(*n_items_per_category_range):
+        for items_per_category in product(*(combinations(category, n_items) for n_items, category in zip(n_items_per_category, categories))):
+            items = sum(map(list, items_per_category), [])
+            yield Game(properties, items)
+
 @solution("21.txt", "Part 1")
 def solve(string):
     # Load the given boss stats
     properties = {k:int(v) for k, v in [line.split(": ") for line in string.split("\n")]}
 
-    def games():
-        """Yield all possible games within buying constraints."""
-
-        # Constraints:
-        # Must purchase 1 weapon
-        # Must purchase either 0 or 1 armor
-        # Must purchase 0, 1, or 2 rings
-        n_items_per_category_range = range(1, 2), range(0, 2), range(0, 3)
-        categories = store.weapons, store.armor, store.rings
-        for n_items_per_category in product(*n_items_per_category_range):
-            for items_per_category in product(*(combinations(category, n_items) for n_items, category in zip(n_items_per_category, categories))):
-                items = sum(map(list, items_per_category), [])
-                yield Game(properties, items)
-
     # Sort the games by cost
-    sorted_games = sorted(games(), key=lambda game: game.spent)
+    sorted_games = sorted(games(properties), key=lambda game: game.spent)
 
     # Play through all games in order until the first success
     for game in sorted_games:
         if game.play():
             return game.spent
+
+@solution("21.txt", "Part 2")
+def solve(string):
+    # Load the given boss stats
+    properties = {k:int(v) for k, v in [line.split(": ") for line in string.split("\n")]}
+
+    # Find all losing games
+    losing_games = filter(lambda game: not game.play(), games(properties))
+
+    # Get the costs
+    costs = [game.spent for game in losing_games]
+
+    # Get the largest amount as answer
+    return max(*costs)
