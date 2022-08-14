@@ -32,7 +32,7 @@ class Store:
                 Item("Platemail",  102, 0, 5),
                 ]
         self.rings = [
-                Item("Damage +1",  25,  1, 1),
+                Item("Damage +1",  25,  1, 0),
                 Item("Damage +2",  50,  2, 0),
                 Item("Damage +3",  100, 3, 0),
                 Item("Defense +1", 20,  0, 1),
@@ -151,14 +151,10 @@ def solve(string):
                 items = sum(map(list, items_per_category), [])
                 yield Game(properties, items)
 
-    # Play all games to find winning games
-    winning = filter(lambda game: game.play(), games())
+    # Sort the games by cost
+    sorted_games = sorted(games(), key=lambda game: game.spent)
 
-    # Sort the winning games by amount of gold spent
-    ranking = sorted(winning, key=lambda game: game.spent)
-
-    # Answer is least amount of gold
-    # Replay the game of the answer for fun
-    game = Game(properties, ranking[0].player.items)
-    game.play()
-    return game.spent
+    # Play through all games in order until the first success
+    for game in sorted_games:
+        if game.play():
+            return game.spent
