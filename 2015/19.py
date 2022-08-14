@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from functools import cache
+from random import shuffle
 
 from advent import solution
 
@@ -31,28 +31,24 @@ def solve(string):
     replacements_string, molecule = string.split("\n\n")
     replacements = [tuple(s.strip() for s in string.split("=>")) for string in replacements_string.split("\n")]
 
-    def replace(molecule):
-        """Yield all possible BACKWARDS replacements given a molecule."""
-        for source, replacement in replacements:
-            for index in indices(molecule, replacement):
-                yield patch(molecule, source, index, len(replacement))
+    def try_random_search(molecule, target="e"):
+        """Attempt a random path."""
+        steps = 0
+        while molecule != "e":
+            old = molecule
+            shuffle(replacements)
+            for left, right in replacements:
+                if right in molecule:
+                    molecule = molecule.replace(right, left)
+                    steps += 1
+            if old == molecule:
+                # Dead end
+                return -1
+        # Success in this number of steps
+        return steps
 
-    @cache
-    def search(molecule, target="e", depth=0):
-        """Perform backwards depth-first brute-force search."""
-        # If we found the target, cease recursion and return depth
-        if molecule == target:
-            return depth
-        # Get the next level of the tree
-        # Filter out dead ends
-        generation = [search(replaced, target, depth + 1) for replaced in replace(molecule)]
-        filtered = list(filter(lambda x: x != -1, generation))
-        # As we are searching for the shortest path,
-        # take the minimum steps
-        if filtered:
-            return filtered[0] if len(filtered) == 1 else min(*filtered)
-        # If we arrive at a dead end (no results), cease recursion and return -1 to signify target not found
-        else:
-            return -1
-
-    return search(molecule)
+    # Try several random paths and pick the lowest
+    # (Relying on probability that the answer will be correct)
+    paths = [try_random_search(molecule) for i in range(1000000)]
+    filtered = list(filter(lambda x: x != -1, paths))
+    return min(*filtered)
