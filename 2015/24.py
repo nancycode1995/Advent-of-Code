@@ -10,8 +10,7 @@ def prod(values):
         product *= value
     return product
 
-@solution("24.txt", "Part 1")
-def solve(string):
+def solution_into_n_parts(string, n):
     # The package weights
     weights = list(map(int, string.split()))
 
@@ -19,7 +18,7 @@ def solve(string):
     total = sum(weights)
 
     # Evenly divide
-    group_sum = total // 4
+    group_sum = total // n
 
     # Find the possible groupings starting from lowest number of packagesthat add to group_sum
     for i in count(1):
@@ -33,3 +32,11 @@ def solve(string):
 
             # Find the lowest quantum entanglement and return that as the answer
             return sorted(quantum_entanglements)[0]
+
+@solution("24.txt", "Part 1")
+def solve(string):
+    return solution_into_n_parts(string, 3)
+
+@solution("24.txt", "Part 2")
+def solve(string):
+    return solution_into_n_parts(string, 4)
