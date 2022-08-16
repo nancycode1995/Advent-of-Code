@@ -1,124 +1,132 @@
 #!/usr/bin/env python3
 
 from abc import ABC, abstractmethod
-from itertools import product, combinations
+from itertools import product, combinations, permutations
 
 from advent import solution
 
-class Item:
-    def __init__(self, name, cost, damage, armor):
-        self.name = name
-        self.cost = cost
-        self.damage = damage
-        self.armor = armor
+class Spell:
+    def __init__(self, name, cost, damage, armor, hp, mana, effect):
+        self.name = name     # Name of spell
+        self.cost = cost     # Mana cost of spell
+        self.damage = damage # Damage score for attack
+        self.armor = armor   # Armor score for defense
+        self.hp = hp         # Heals this many hit points
+        self.mana = mana     # Gives you this much mana per turn
+        self.effect = effect # Number of turns during which it remains active
 
     def __repr__(self):
-        return f'Item("{self.name}")'
+        return f'Spell("{self.name}")'
 
-class Store:
-    def __init__(self):
-        self.weapons = [
-                Item("Dagger",     8,  4, 0),
-                Item("Shortsword", 10, 5, 0),
-                Item("Warhammer",  25, 6, 0),
-                Item("Longsword",  40, 7, 0),
-                Item("Greataxe",   74, 8, 0),
-                ]
-        self.armor = [
-                Item("Leather",    13,  0, 1),
-                Item("Chainmail",  31,  0, 2),
-                Item("Splintmail", 53,  0, 3),
-                Item("Bandedmail", 75,  0, 4),
-                Item("Platemail",  102, 0, 5),
-                ]
-        self.rings = [
-                Item("Damage +1",  25,  1, 0),
-                Item("Damage +2",  50,  2, 0),
-                Item("Damage +3",  100, 3, 0),
-                Item("Defense +1", 20,  0, 1),
-                Item("Defense +2", 40,  0, 2),
-                Item("Defense +3", 80,  0, 3),
-                ]
+    def cast(self, character, opponent):
+        """Apply cast effect."""
+        character.mana -= self.cost
+        if self.effect == 0:
+            opponent.hp -= self.damage
+        character.hp += self.hp
+        return Effect(self)
+
+    def turn(self, character, opponent):
+        """Apply turn effects."""
+        opponent.hp -= self.damage
+        character.mana += self.mana
+
+class Effect:
+    def __init__(self, spell):
+        self.spell = spell
+        self.timer = spell.effect
+
+    def turn(self, character, opponent):
+        if self.timer > 0:
+            self.spell.turn(character, opponent)
+            self.timer -= 1
+            return self.timer
+
+spells = [
+        Spell("Magic Missile", 53,  4, 0, 0, 0,   0),
+        Spell("Drain",         73,  2, 0, 2, 0,   0),
+        Spell("Shield",        113, 0, 7, 0, 0,   6),
+        Spell("Poison",        173, 3, 0, 0, 0,   6),
+        Spell("Recharge",      229, 0, 0, 0, 191, 5),
+        ]
 
 class Character(ABC):
     def __init__(self, name, hp):
         self.name = name
         self.hp = hp
 
-    @property
     @abstractmethod
-    def damage(self):
-        """Total damage score."""
+    def inflict(self, damage) -> (int, int):
+        """Inflict damage onto this character and return the amount actualy inflicted and remaining hit points."""
         ...
 
-    @property
     @abstractmethod
-    def armor(self):
-        """Total armor score."""
+    def turn_passive(self, opponent):
+        """This happens every turn, regardless of whose turn it is."""
         ...
 
-    def attack(self, opponent) -> (int, int):
-        """Attack an opponent character and return the amount of damage inflicted and remaining hp of opponent."""
-        damage = max(1, self.damage - opponent.armor)
-        opponent.hp -= damage
-        return damage, opponent.hp
+    @abstractmethod
+    def turn(self, opponent):
+        """It is this character's turn."""
+        ...
 
 class Player(Character):
-    def __init__(self, hp=100, items=None):
+    def __init__(self, hp=50, mana=500, spells=spells, turns=None):
         super().__init__("Player", hp)
-        self.items = items or []
+        self.spells = spells or []
+        self.effects = []
+        self.turns = turns or iter()
+        self.spent = 0
 
-    @property
-    def damage(self):
-        """Total damage score as determined by possessed items."""
-        return sum(item.damage for item in self.items)
+    def inflict(self, damage) -> (int, int):
+        armor = sum(effect.armor for effect in self.effects)
+        effective = max(1, damage - armor)
+        self.hp -= effective
+        return effective, self.hp
 
-    @property
-    def armor(self):
-        """Total armor score as determined by possessed items."""
-        return sum(item.armor for item in self.items)
+    def turn_passive(self, opponent):
+        self.effects = list(filter(lambda effect: effect.timer > 0, self.effects))
+        for effect in self.effects:
+            effect.turn(self, opponent)
+
+    def turn(self, opponent) -> (int, int):
+        spell = next(self.turns)
+        if spell not in self.effects:
+            self.spent += spell.cost
+            self.effects.append(spell.cast(self, opponent))
 
 class Boss(Character):
-    def __init__(self, hp, damage, armor):
+    def __init__(self, hp, damage):
         super().__init__("Boss", hp)
-        self._damage = damage
-        self._armor = armor
+        self.damage = damage
 
-    @property
-    def damage(self):
-        return self._damage
+    def inflict(self, damage) -> (int, int):
+        self.hp -= damage
+        return damage, self.hp
 
-    @property
-    def armor(self):
-        return self._armor
+    def turn_passive(self, opponent):
+        pass
+
+    def turn(self, opponent) -> (int, int):
+        return opponent.inflict(self.damage)
 
 class Game:
-    def __init__(self, properties, items=None):
-        self.player = Player(items=items)
-        self.boss = Boss(properties["Hit Points"], properties["Damage"], properties["Armor"])
+    def __init__(self, properties, turns):
+        self.player = Player(turns=turns)
+        self.boss = Boss(properties["Hit Points"], properties["Damage"])
 
     def turn(self):
         """Do one round of turns and return the winner if someone dies."""
-        # Player's turn
-        damage, hp = self.player.attack(self.boss)
-        print(f"The player deals {damage}; the boss goes down to {hp} hit points.")
-        if hp <= 0:
-            return self.player
-
-        # Boss's turn
-        damage, hp = self.boss.attack(self.player)
-        print(f"The boss deals {damage}; the player goes down to {hp} hit points.")
-        if hp <= 0:
-            return self.boss
+        for character, opponent in permutations([self.player, self.boss]):
+            self.character.turn_passive(self.opponent)
+            self.opponent.turn_passive(self.character)
+            damage, hp = self.character.turn(self.opponent)
+            if hp <= 0:
+                return self.character
 
     def play(self):
         """Play the game until the end and return whether player wins."""
         print(f"Game begins.")
-        items_string = ", ".join(item.name for item in self.player.items)
-        print(f"Player equipped items: {items_string}!")
-        print(f"Total cost: {self.spent}")
-        print(f"Player has {self.player.hp} hit points, {self.player.damage} damage points, and {self.player.armor} armor points.")
-        print(f"Boss has {self.boss.hp} hit points, {self.boss.damage} damage points, and {self.boss.armor} armor points.")
         while True:
             if winner := self.turn():
                 print(f"{winner.name} wins!")
@@ -126,11 +134,7 @@ class Game:
 
     @property
     def spent(self):
-        """The amount of money that the player has spent."""
-        return sum(item.cost for item in self.player.items)
-
-# Store singleton
-store = Store()
+        return self.player.spent
 
 def games(properties):
     """Yield all possible games within buying constraints."""
@@ -151,24 +155,10 @@ def solve(string):
     # Load the given boss stats
     properties = {k:int(v) for k, v in [line.split(": ") for line in string.split("\n")]}
 
-    # Sort the games by cost
-    sorted_games = sorted(games(properties), key=lambda game: game.spent)
-
-    # Play through all games in order until the first success
-    for game in sorted_games:
-        if game.play():
-            return game.spent
-
-@solution("21.txt", "Part 2")
-def solve(string):
-    # Load the given boss stats
-    properties = {k:int(v) for k, v in [line.split(": ") for line in string.split("\n")]}
-
-    # Find all losing games
-    losing_games = filter(lambda game: not game.play(), games(properties))
-
-    # Get the costs
-    costs = [game.spent for game in losing_games]
-
-    # Get the largest amount as answer
-    return max(*costs)
+#    # Sort the games by cost
+#    sorted_games = sorted(games(properties), key=lambda game: game.spent)
+#
+#    # Play through all games in order until the first success
+#    for game in sorted_games:
+#        if game.play():
+#            return game.spent
