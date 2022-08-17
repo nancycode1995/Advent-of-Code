@@ -31,7 +31,7 @@ module.exports = class Solution {
      * Convenience function to get the puzzle input as an array of lines.
      */
     get lines() {
-        return this.input.trim().split(/\s+/g);
+        return this.input.split(/\s+/g);
     }
 
     /**
