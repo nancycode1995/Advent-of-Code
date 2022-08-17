@@ -97,9 +97,9 @@ class Player(Character):
         return effective, self.hp
 
     def turn_passive(self, opponent):
-        self.effects = list(filter(lambda effect: effect.timer > 0, self.effects))
         for effect in self.effects:
             effect.turn(self, opponent)
+        self.effects = list(filter(lambda effect: effect.timer > 0, self.effects))
 
     def turn(self, opponent, spell: str) -> (int, int):
         if spell not in [effect.spell for effect in self.effects]:
@@ -110,7 +110,8 @@ class Player(Character):
                 if not quiet:
                     string = f", dealing {damage} damage." if damage else "."
                     print(f"{self.name} casts {spell.name}{string}")
-                self.effects.append(effect)
+                if effect.timer > 0:
+                    self.effects.append(effect)
                 return damage, hp
             else:
                 raise InvalidMoveException(f"Not enough mana to cast spell {spell.name}!")
