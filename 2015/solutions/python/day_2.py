@@ -27,7 +27,7 @@ class Present:
     @property
     def required_paper(self):
         surface_areas = list(map(prod, self.sides))
-        smallest = sorted(surface_areas)[0]
+        smallest = min(*surface_areas)
         return 2 * sum(surface_areas) + smallest
 
     @property
@@ -37,7 +37,7 @@ class Present:
     @property
     def required_ribbon(self):
         perimeters = list(map(sum, self.sides))
-        smallest = sorted(perimeters)[0]
+        smallest = min(*perimeters)
         return 2 * smallest + self.volume
 
     def __str__(self):

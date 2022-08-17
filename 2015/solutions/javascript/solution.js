@@ -28,6 +28,13 @@ module.exports = class Solution {
     }
 
     /**
+     * Convenience function to get the puzzle input as an array of lines.
+     */
+    get lines() {
+        return this.input.trim().split(/\s+/g);
+    }
+
+    /**
      * Return the answer to part one of this day's solution.
      */
     partOne() {}
