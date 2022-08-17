@@ -40,5 +40,3 @@ function main(cmd, ...args) {
 if (require.main === module) {
     main(...process.argv.slice(1));
 }
-
-console.log("Test!");

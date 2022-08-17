@@ -14,6 +14,7 @@ module.exports = class Solution {
         this.input = input;
         this.answerOne = answerOne;
         this.answerTwo = answerTwo;
+        this.initialize();
     }
 
     static fromPaths(pathInput, pathAnswerOne, pathAnswerTwo) {
@@ -31,8 +32,13 @@ module.exports = class Solution {
      * Convenience function to get the puzzle input as an array of lines.
      */
     get lines() {
-        return this.input.split(/\s+/g);
+        return this.input.split(/\n/g);
     }
+
+    /**
+     * Subclass initialization function for state shared between the parts.
+     */
+    initialize() {}
 
     /**
      * Return the answer to part one of this day's solution.
