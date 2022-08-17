@@ -30,23 +30,4 @@ def solve(string):
 def solve(string):
     replacements_string, target = string.split("\n\n")
     replacements = [tuple(s.strip() for s in string.split("=>")) for string in replacements_string.split("\n")]
-
-    replacements.sort(key=lambda x: len(x[1]), reverse=True)
-
-    steps = 0
-    molecule = target
-    while molecule != "e":
-        old = molecule
-        print(molecule)
-        for left, right in replacements:
-            if right in molecule:
-                molecule = molecule.replace(right, left)
-                steps += 1
-                break
-        if old == molecule:
-            # Dead end
-            print("dead")
-            shuffle(replacements)
-            molecule = target
-    # Success in this number of steps
-    return steps
+    return len(list(filter(lambda c: c.isupper(), target))) - target.count("Rn") - target.count("Ar") - 2 * target.count("Y") - 1
