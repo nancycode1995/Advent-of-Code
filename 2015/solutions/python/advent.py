@@ -79,7 +79,7 @@ def run(day=None, part=None):
 
 def main(cmd, *args):
     if len(args) > 2:
-        sys.exit(f"Usage: {args[0]} [day] [part]")
+        sys.exit(f"Usage: {cmd} [day] [part]")
     else:
         run(*args)
 
