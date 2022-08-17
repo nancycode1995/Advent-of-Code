@@ -4,10 +4,11 @@ Advent of Code completed in a variety of programming languages!
 
 ## Another year, another language!
 
-So far, here are the languages I've completed each year in:
+So far, here are the languages I've used for each year:
 
 - 2015
-  - Python
+  - Python _(complete)_
+  - JavaScript _(partial)_
 
 ## Where stuff is
 
