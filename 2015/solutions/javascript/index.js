@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const days = [...Array(1).keys()].map(i => require(`./day${i + 1}.js`));
+const days = [...Array(25).keys()].map(i => require(`./day${i + 1}.js`));
 
 function run(day, part) {
     console.log("Welcome to Nancy's Advent of Code 2015 solutions! :-)");

@@ -17,14 +17,14 @@ module.exports = class Solution {
     }
 
     static fromPaths(pathInput, pathAnswerOne, pathAnswerTwo) {
-        return new Solution(readFile(pathInput), readFile(pathAnswerOne), readFile(pathAnswerTwo));
+        return new this(readFile(pathInput), readFile(pathAnswerOne), readFile(pathAnswerTwo));
     }
 
     static instantiate(day) {
         const pathInput = `../../inputs/${day}.txt`;
         const pathAnswerOne = `../../answers/${day}.1.txt`;
         const pathAnswerTwo = `../../answers/${day}.2.txt`;
-        return Solution.fromPaths(pathInput, pathAnswerOne, pathAnswerTwo);
+        return this.fromPaths(pathInput, pathAnswerOne, pathAnswerTwo);
     }
 
     /**
