@@ -2,7 +2,7 @@ const fs = require("fs");
 
 function readFile(path) {
     try {
-        return fs.readFileSync(path, "utf8");
+        return fs.readFileSync(path, "utf8").trim();
     } catch (error) {
         console.error(`Unable to open file "${path}"!`);
         process.exit(1);
