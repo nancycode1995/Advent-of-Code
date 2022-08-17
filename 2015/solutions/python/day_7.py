@@ -4,7 +4,7 @@ from functools import reduce, cache
 from numpy import uint16
 from abc import ABC, abstractmethod
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 def make_thunk(string, nodes):
     node = NodeSignal.compile(string, nodes)

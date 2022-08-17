@@ -2,7 +2,7 @@
 
 from itertools import combinations
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 class Solution(SolutionBase):
     def part_one(self):

@@ -20,9 +20,9 @@ class SolutionBase:
 
     @classmethod
     def instantiate(cls, day):
-        path_input = f"inputs/{day}.txt"
-        path_answer_one = f"answers/{day}.1.txt"
-        path_answer_two = f"answers/{day}.2.txt"
+        path_input = f"../../inputs/{day}.txt"
+        path_answer_one = f"../../answers/{day}.1.txt"
+        path_answer_two = f"../../answers/{day}.2.txt"
         return cls.from_paths(path_input, path_answer_one, path_answer_two)
 
     @abstractmethod

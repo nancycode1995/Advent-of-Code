@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 def is_vowel(character):
     return character.lower() in "aeiou"

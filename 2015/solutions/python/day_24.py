@@ -2,7 +2,7 @@
 
 from itertools import combinations, count
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 def prod(values):
     product = 1

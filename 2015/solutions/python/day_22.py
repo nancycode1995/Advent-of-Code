@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from itertools import permutations
 from copy import deepcopy
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 quiet = True
 

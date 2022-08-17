@@ -4,14 +4,6 @@
 
 Here are my complete solutions for year 2015 of Advent of Code written in Python. ^.^
 
-#### Where stuff is
-
-My puzzle inputs are found in `inputs/`.
-
-The correct answers are found in `answers/`.
-
-And my implementations are found in `solutions/`.
-
 #### How to run it
 
 You can calculate the answers to both parts of all days in order like this:

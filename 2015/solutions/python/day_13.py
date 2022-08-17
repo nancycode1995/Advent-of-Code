@@ -2,7 +2,7 @@
 
 from itertools import permutations
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 def parse_rule(string):
     person, string = string.split(maxsplit=1)

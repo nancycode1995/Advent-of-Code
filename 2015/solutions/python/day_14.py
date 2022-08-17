@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 class Reindeer:
     def __init__(self, name, speed, fly_duration, rest_duration):

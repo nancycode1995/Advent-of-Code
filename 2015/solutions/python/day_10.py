@@ -2,7 +2,7 @@
 
 from itertools import groupby
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 def look_and_say(string, iterations=1):
     for i in range(iterations):

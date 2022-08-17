@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 class Instruction(ABC):
     @abstractmethod

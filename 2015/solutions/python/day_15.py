@@ -3,7 +3,7 @@
 from itertools import product
 from numpy import prod
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 class Ingredient:
     def __init__(self, name, values):

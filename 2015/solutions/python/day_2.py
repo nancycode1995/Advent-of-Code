@@ -3,7 +3,7 @@
 from itertools import combinations
 from numpy import prod
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 class Present:
     def __init__(self, length, width, height):

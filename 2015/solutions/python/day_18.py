@@ -2,7 +2,7 @@
 
 from itertools import product
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 def animate(grid, width):
     def animate_light(i, state):

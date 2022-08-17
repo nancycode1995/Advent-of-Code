@@ -2,7 +2,7 @@
 
 from random import shuffle
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 def patch(string, substring, index, length):
     """Replace a portion of a string."""

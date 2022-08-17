@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from itertools import product, combinations
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 class Item:
     def __init__(self, name, cost, damage, armor):

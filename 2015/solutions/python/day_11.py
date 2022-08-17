@@ -2,7 +2,7 @@
 
 from itertools import groupby
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 radix = ord("z") - ord("a") + 1 # aka base 26
 

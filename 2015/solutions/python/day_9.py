@@ -3,7 +3,7 @@
 from __future__ import annotations
 from itertools import permutations
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 class Place:
     def __init__(self, name: str, distances: dict):

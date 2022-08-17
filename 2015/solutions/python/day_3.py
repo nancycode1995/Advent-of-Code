@@ -2,7 +2,7 @@
 
 from itertools import cycle
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 directions = {
         "<": (-1, 0),

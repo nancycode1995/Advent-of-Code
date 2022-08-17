@@ -2,7 +2,7 @@
 
 import json
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 def count(data, ignore=None):
     if type(data) == list:

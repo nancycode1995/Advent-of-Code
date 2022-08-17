@@ -2,7 +2,7 @@
 
 from numpy import cumsum
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 def translate(string):
     """Return a map from the input string characters to corresponding integer 1 or -1."""

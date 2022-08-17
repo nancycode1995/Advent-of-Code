@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from itertools import product
 from numpy import prod
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 def consume(string, expected):
     """Consume the first of any expected token strings from a string and return the token and the remaining string."""

@@ -3,7 +3,7 @@
 from itertools import count
 from hashlib import md5
 
-from solutions.solution import SolutionBase
+from solution import SolutionBase
 
 def find_hash(secret, match_function):
     inputs = (f"{secret}{x}".encode("ascii") for x in count())
