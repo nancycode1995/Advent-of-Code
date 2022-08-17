@@ -29,4 +29,4 @@ You can even calculate the answer only to a particular part (say, part 2) of a p
 python advent.py 7 2
 ```
 
-The above invocations will always test calculated answer against the known answers found in `answers/`.
+The above invocations will always test calculated answers against the known answers found in `answers/`.
