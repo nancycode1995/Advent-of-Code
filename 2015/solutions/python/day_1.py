@@ -12,7 +12,8 @@ def translate(string):
 
 class Solution(SolutionBase):
     def part_one(self):
-        return sum(translate(self.input))
+        #return sum(translate(self.input))
+        return self.input.count("(") - self.input.count(")");
 
     def part_two(self):
         for i, n in enumerate(cumsum(list(translate(self.input)))):
