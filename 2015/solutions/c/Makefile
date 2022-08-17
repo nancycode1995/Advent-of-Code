@@ -1,0 +1,63 @@
+SOURCE_PATH        := src
+SOURCE_PATH_ADVENT := $(SOURCE_PATH)/advent
+SOURCE_PATH_DAYS   := $(SOURCE_PATH)/days
+
+OBJECT_PATH        := obj
+OBJECT_PATH_ADVENT := $(OBJECT_PATH)/advent
+OBJECT_PATH_DAYS   := $(OBJECT_PATH)/days
+
+BUILD_PATH    := build
+
+TARGET        := advent
+TARGET_ADVENT := $(BUILD_PATH)/$(TARGET)
+
+CC      := cc
+DBG     := gdb
+CFLAGS  := -Wall -Wpedantic -ansi -g
+LDFLAGS := -lm
+
+SOURCE_FILES_ADVENT := $(wildcard $(SOURCE_PATH_ADVENT)/*.c)
+SOURCE_FILES_DAYS   := $(wildcard $(SOURCE_PATH_DAYS)/*.c)
+HEADER_FILES_ADVENT := $(wildcard $(SOURCE_PATH_ADVENT)/*.h)
+HEADER_FILES_DAYS   := $(wildcard $(SOURCE_PATH_DAYS)/*.h)
+
+OBJECT_FILES_ADVENT := $(patsubst $(SOURCE_PATH_ADVENT)/%.c,$(OBJECT_PATH_ADVENT)/%.o,$(SOURCE_FILES_ADVENT))
+OBJECT_FILES_DAYS   := $(patsubst $(SOURCE_PATH_DAYS)/%.c,$(OBJECT_PATH_DAYS)/%.o,$(SOURCE_FILES_DAYS))
+
+DEPENDENCIES_ADVENT := $(HEADER_FILES_ADVENT)
+DEPENDENCIES_DAYS   := $(HEADER_FILES_DAYS)
+
+all: $(TARGET_ADVENT)
+
+paths := $(OBJECT_PATH_ADVENT) \
+         $(OBJECT_PATH_DAYS) \
+         $(BUILD_PATH)
+
+$(paths):
+	mkdir -p $@
+
+$(OBJECT_PATH_ADVENT)/%.o: $(SOURCE_PATH_ADVENT)/%.c $(DEPENDENCIES_ADVENT) $(OBJECT_PATH_ADVENT) 
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+$(OBJECT_PATH_DAYS)/%.o: $(SOURCE_PATH_DAYS)/%.c $(DEPENDENCIES_DAYS) $(OBJECT_PATH_DAYS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+$(TARGET_ADVENT): $(BUILD_PATH) $(OBJECT_FILES_ADVENT) $(OBJECT_FILES_DAYS)
+	$(CC) -o $@ $(filter-out $<,$^) $(LDFLAGS)
+
+debug: $(TARGET_ADVENT)
+	$(DBG) -ex run --args $(TARGET_ADVENT) $(DAY) $(PART)
+
+test: $(TARGET_ADVENT)
+	$(TARGET_ADVENT) $(DAY) $(PART)
+
+clean:
+	rm -rf $(BUILD_PATH) $(OBJECT_PATH)
+
+count:
+	wc -l $(SOURCE_PATH_ADVENT)/*.[ch] $(SOURCE_PATH_DAYS)/*.[ch]
+
+.PHONY: debug
+.PHONY: test
+.PHONY: clean
+.PHONY: count
