@@ -1,6 +1,5 @@
-# Advent of Code
-## Year 2015
-### Python
+# Advent of Code 2015
+## Python
 
 Here are my complete solutions for year 2015 of Advent of Code written in Python. ^.^
 
