@@ -13,7 +13,7 @@ TARGET_ADVENT := $(BUILD_PATH)/$(TARGET)
 
 CC      := cc
 DBG     := gdb
-CFLAGS  := -Wall -Wpedantic -ansi -g
+CFLAGS  := -Wall -Wpedantic -g
 LDFLAGS := -lm
 
 SOURCE_FILES_ADVENT := $(wildcard $(SOURCE_PATH_ADVENT)/*.c)
