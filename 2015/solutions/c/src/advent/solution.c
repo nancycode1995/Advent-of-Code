@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "solution.h"
 
@@ -6,23 +7,56 @@
 
 solution_t *solutions[N_DAYS][2];
 
-void read_input(size_t day, char *buffer) {
-    // TODO: compute input file path for this day
-    // TODO: read the contents of the file into buffer
-    // TODO: return success status
+char *read_file(char *path) {
+    FILE *stream;
+    size_t size_buffer;
+    char *buffer;
+    if (!(stream = fopen(path, "r"))) {
+        fprintf(stderr, "Unable to open file at \"%s\"!\n", path);
+        exit(EXIT_FAILURE);
+    }
+    fseek(stream, 0, SEEK_END);
+    size_buffer = ftell(stream);
+    fseek(stream, 0, SEEK_SET);
+    if (!(buffer = malloc(sizeof(char) * size_buffer))) {
+        fprintf(stderr, "Unable to allocate memory!\n");
+        exit(EXIT_FAILURE);
+    }
+    fread(buffer, sizeof(char), size_buffer, stream);
+    fclose(stream);
+    return buffer;
+}
+
+char *read_input(size_t day) {
+    char path[128];
+    sprintf(path, "../../inputs/%zu.txt", day);
+    return read_file(path);
+}
+
+char *read_answer(size_t day, size_t part) {
+    char path[128];
+    sprintf(path, "../../answers/%zu.%zu.txt", day, part);
+    return read_file(path);
 }
 
 void check(size_t day, size_t part, char *output) {
-    // TODO: compute answer file path for this part and this day
-    // TODO: read contents of file
-    // TODO: compare given answer with contents of file
-    // TODO: include indication of correctness in message
-    // TODO: free resources
-    printf("Result: %s\n", output);
+    /* load the answer for given day and part */
+    char *answer = read_answer(day, part);
+
+    /* compare and print results */
+    printf("Result: %s ", output);
+    if (strcmp(output, answer) == 0)
+        printf("(CORRECT)\n");
+    else
+        printf("(INCORRECT; should be %s)\n", answer);
+
+    /* free resources */
+    free(answer);
 }
 
 void run(size_t day, size_t part) {
-    char *input, *output;
+    char *input;
+    char output[SIZE_OUTPUT];
 
     printf("Solving day %zu, part %zu...\n", day + 1, part + 1);
 
@@ -30,9 +64,7 @@ void run(size_t day, size_t part) {
     solution_t *solution = solutions[day][part];
 
     /* load the puzzle input and allocate an output buffer */
-    // TODO: handle errors */
-    read_input(day, input);
-    output = malloc(sizeof(char) * SIZE_OUTPUT);
+    input = read_input(day);
 
     /* perform the calculation */
     solution(input, output);
@@ -42,7 +74,6 @@ void run(size_t day, size_t part) {
 
     /* free resources */
     free(input);
-    free(output);
 }
 
 void solution_run(size_t day) {
