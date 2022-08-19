@@ -5,7 +5,7 @@
 
 #define BASE 1000
 
-int presents[BASE * BASE];
+static int presents[BASE * BASE];
 
 void solution_day_3_part_1(char *input, char *output) {
     int position = BASE * BASE / 2;

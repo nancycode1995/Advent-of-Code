@@ -6,12 +6,12 @@
 #include "solution.h"
 #include "md5.h"
 
-void sprint_hash(char *output, uint8_t *hash) {
+static void sprint_hash(char *output, uint8_t *hash) {
     for (int i = 0; i < 16; i++)
         sprintf(&output[i * 2], "%02x", (int) *(hash++));
 }
 
-void solution(char *input, char *output, char *match) {
+static void solution(char *input, char *output, char *match) {
     uint8_t *hash;
     char string[64], hash_string[64];
     int i = 0;

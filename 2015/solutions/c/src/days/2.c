@@ -8,7 +8,7 @@ typedef struct {
     int length, width, height;
 } present_t;
 
-int required_paper(present_t *present) {
+static int required_paper(present_t *present) {
     int a = present->length * present->width;
     int b = present->length * present->height;
     int c = present->width * present->height;
@@ -18,7 +18,7 @@ int required_paper(present_t *present) {
     return 2 * sum + smallest;
 }
 
-int required_ribbon(present_t *present) {
+static int required_ribbon(present_t *present) {
     int a = present->length + present->width;
     int b = present->length + present->height;
     int c = present->width + present->height;
@@ -28,7 +28,7 @@ int required_ribbon(present_t *present) {
     return 2 * smallest + volume;
 }
 
-char *skip_character(char *string, char character) {
+static char *skip_character(char *string, char character) {
     char c;
     while ((c = *(string++)))
         if (*string == character)
@@ -36,7 +36,7 @@ char *skip_character(char *string, char character) {
     return string - 1;
 }
 
-char *parse_present(present_t *present, char *string) {
+static char *parse_present(present_t *present, char *string) {
     present->length = atoi(string);
     string = skip_character(string, 'x');
     present->width = atoi(string);
@@ -45,7 +45,7 @@ char *parse_present(present_t *present, char *string) {
     return skip_character(string, '\n');
 }
 
-size_t parse_presents(present_t *presents, char *string) {
+static size_t parse_presents(present_t *presents, char *string) {
     size_t i = 0;
     while (*string)
         string = parse_present(&presents[i++], string);
