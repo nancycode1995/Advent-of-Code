@@ -7,8 +7,9 @@
 So far, here are the languages I've used for each year:
 
 - [2015](https://adventofcode.com/2015)
-  - <img height="16" width="16" src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/python.svg" /> **Python** _(complete)_
+  - <img height="16" width="16" src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/python.svg" /> **Python** _(complete)_ 🎉
   - <img height="16" width="16" src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/javascript.svg" /> **JavaScript** _(partial)_
+  - <img height="16" width="16" src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/c.svg" /> **C** _(partial)_
 
 ## Where stuff is
 
