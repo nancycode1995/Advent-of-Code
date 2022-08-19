@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "solution.h"
 #include "../days/solution.h"
@@ -51,6 +52,9 @@ char *read_file(char *path) {
     }
     fread(buffer, sizeof(char), size_buffer, stream);
     buffer[size_buffer] = '\0';
+    /* trim trailing whitespace */
+    for (char *p = buffer + size_buffer - 1; isspace(*p); p--)
+        *p = '\0';
     fclose(stream);
     return buffer;
 }

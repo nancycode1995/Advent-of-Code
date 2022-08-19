@@ -33,7 +33,7 @@ char *skip_character(char *string, char character) {
     while ((c = *(string++)))
         if (*string == character)
             return string + 1;
-    return NULL;
+    return string - 1;
 }
 
 char *parse_present(present_t *present, char *string) {
